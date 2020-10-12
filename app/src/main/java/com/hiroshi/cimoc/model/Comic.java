@@ -1,10 +1,10 @@
 package com.hiroshi.cimoc.model;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Transient;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Hiroshi on 2016/7/20.
@@ -12,54 +12,75 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class Comic {
 
-    @Id(autoincrement = true) private Long id;
-    @NotNull private Integer source;
-    @NotNull private String cid;
-    @NotNull private String title;
-    @NotNull private String cover;
-    @NotNull private String update;
+    @Id(autoincrement = true)
+    private Long id;
+    @NotNull
+    private int source;
+    @NotNull
+    private String cid;
+    @NotNull
+    private String title;
+    @NotNull
+    private String cover;
+    @NotNull
+    private boolean highlight;
+    @NotNull
+    private boolean local;
+    private String update;
+    private Boolean finish;
     private Long favorite;
     private Long history;
+    private Long download;
     private String last;
     private Integer page;
+    private String chapter;
+    private String url;
 
-    @Transient private String intro;
-    @Transient private String author;
-    @Transient private Boolean status;
+    @Transient
+    private String intro;
+    @Transient
+    private String author;
 
-    @Generated(hash = 1262295933)
-    public Comic(Long id, @NotNull Integer source, @NotNull String cid,
-            @NotNull String title, @NotNull String cover, @NotNull String update,
-            Long favorite, Long history, String last, Integer page) {
+    public Comic(int source, String cid, String title, String cover, String update, String author) {
+        this(null, source, cid, title, cover == null ? "" : cover, false, false, update,
+                null, null, null, null, null, null, null, null);
+        this.author = author;
+    }
+
+    public Comic(int source, String cid) {
+        this.source = source;
+        this.cid = cid;
+    }
+
+    public Comic(int source, String cid, String title, String cover, long download) {
+        this(null, source, cid, title, cover == null ? "" : cover, false, false, null,
+                null, null, null, download, null, null, null, null);
+    }
+
+    @Generated(hash = 2020487280)
+    public Comic(Long id, int source, @NotNull String cid, @NotNull String title, @NotNull String cover, boolean highlight,
+                 boolean local, String update, Boolean finish, Long favorite, Long history, Long download, String last, Integer page,
+                 String chapter, String url) {
         this.id = id;
         this.source = source;
         this.cid = cid;
         this.title = title;
         this.cover = cover;
+        this.highlight = highlight;
+        this.local = local;
         this.update = update;
+        this.finish = finish;
         this.favorite = favorite;
         this.history = history;
+        this.download = download;
         this.last = last;
         this.page = page;
+        this.chapter = chapter;
+        this.url = url;
     }
 
     @Generated(hash = 1347984162)
     public Comic() {
-    }
-
-    public Comic(Integer source, String cid, String title, String cover, String update, String author, Boolean status) {
-        this.source = source;
-        this.cid = cid;
-        this.title = title;
-        this.cover = cover;
-        this.update = update;
-        this.author = author;
-        this.status = status;
-    }
-
-    public Comic(Integer source, String cid) {
-        this.source = source;
-        this.cid = cid;
     }
 
     @Override
@@ -67,13 +88,22 @@ public class Comic {
         return o instanceof Comic && ((Comic) o).id.equals(id);
     }
 
-    public void setInfo(String title, String cover, String update, String intro, String author, boolean status) {
-        this.title = title;
-        this.cover = cover;
-        this.update = update;
+    public void setInfo(String title, String cover, String update, String intro, String author, boolean finish) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (cover != null) {
+            this.cover = cover;
+        }
+        if (update != null) {
+            this.update = update;
+        }
         this.intro = intro;
-        this.author = author;
-        this.status = status;
+        if (author != null) {
+            this.author = author;
+        }
+        this.finish = finish;
+        this.highlight = false;
     }
 
     public String getIntro() {
@@ -90,14 +120,6 @@ public class Comic {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public Boolean getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
     }
 
     public Integer getPage() {
@@ -164,11 +186,11 @@ public class Comic {
         this.cid = cid;
     }
 
-    public Integer getSource() {
+    public int getSource() {
         return this.source;
     }
 
-    public void setSource(Integer source) {
+    public void setSource(int source) {
         this.source = source;
     }
 
@@ -180,4 +202,51 @@ public class Comic {
         this.id = id;
     }
 
+    public boolean getHighlight() {
+        return this.highlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
+    }
+
+    public Long getDownload() {
+        return this.download;
+    }
+
+    public void setDownload(Long download) {
+        this.download = download;
+    }
+
+    public Boolean getFinish() {
+        return this.finish;
+    }
+
+    public void setFinish(Boolean finish) {
+        this.finish = finish;
+    }
+
+    public boolean getLocal() {
+        return this.local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    public String getChapter() {
+        return this.chapter;
+    }
+
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

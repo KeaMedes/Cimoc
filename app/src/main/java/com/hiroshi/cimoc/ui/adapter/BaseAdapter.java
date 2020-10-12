@@ -1,10 +1,14 @@
 package com.hiroshi.cimoc.ui.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.hiroshi.cimoc.global.FastClick;
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -14,16 +18,23 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    protected Context mContext;
-    protected List<T> mDataSet;
-    protected LayoutInflater mInflater;
-    protected OnItemClickListener mClickListener;
-    protected OnItemLongClickListener mLongClickListener;
+    Context mContext;
+    List<T> mDataSet;
+    LayoutInflater mInflater;
+
+    private OnItemClickListener mClickListener;
+    private OnItemLongClickListener mLongClickListener;
 
     public BaseAdapter(Context context, List<T> list) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mDataSet = list;
         mInflater = LayoutInflater.from(context);
+    }
+
+    public void add(T data) {
+        if (mDataSet.add(data)) {
+            notifyItemInserted(mDataSet.size());
+        }
     }
 
     public void add(int location, T data) {
@@ -31,27 +42,45 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyItemInserted(location);
     }
 
-    public void add(T data) {
-        add(mDataSet.size(), data);
+    public void addAll(Collection<T> collection) {
+        addAll(mDataSet.size(), collection);
     }
 
-    public void addAll(List<T> data) {
-        addAll(mDataSet.size(), data);
-    }
-
-    public void addAll(int location, List<T> data) {
-        mDataSet.addAll(location, data);
-        notifyDataSetChanged();
-    }
-
-    public void remove(T data) {
-        if (mDataSet.remove(data)) {
-            notifyDataSetChanged();
+    public void addAll(int location, Collection<T> collection) {
+        if (mDataSet.addAll(location, collection)) {
+            notifyItemRangeInserted(location, location + collection.size());
         }
+    }
+
+    public boolean exist(T data) {
+        return mDataSet.indexOf(data) != -1;
+    }
+
+    public boolean remove(T data) {
+        int position = mDataSet.indexOf(data);
+        if (position != -1) {
+            remove(position);
+            return true;
+        }
+        return false;
     }
 
     public void remove(int position) {
         mDataSet.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void removeAll(Collection<T> collection) {
+        mDataSet.removeAll(collection);
+        notifyDataSetChanged();
+    }
+
+    public boolean contains(T data) {
+        return mDataSet.contains(data);
+    }
+
+    public void reverse() {
+        Collections.reverse(mDataSet);
         notifyDataSetChanged();
     }
 
@@ -60,18 +89,18 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
-    public void setData(List<T> list) {
+    public List<T> getDateSet() {
+        return mDataSet;
+    }
+
+    public void setData(Collection<T> collection) {
         mDataSet.clear();
-        mDataSet.addAll(list);
+        mDataSet.addAll(collection);
         notifyDataSetChanged();
     }
 
     public T getItem(int position) {
         return mDataSet.get(position);
-    }
-
-    public List<T> getDataSet() {
-        return mDataSet;
     }
 
     @Override
@@ -89,36 +118,43 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     public abstract RecyclerView.ItemDecoration getItemDecoration();
 
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mClickListener != null && isClickValid()) {
+                    mClickListener.onItemClick(v, holder.getAdapterPosition());
+                }
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mLongClickListener == null) {
+                    return false;
+                }
+                return mLongClickListener.onItemLongClick(v, holder.getAdapterPosition());
+            }
+        });
+    }
+
+    protected boolean isClickValid() {
+        return FastClick.isClickValid();
+    }
+
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
 
     public interface OnItemLongClickListener {
-        void onItemLongClick(View view, int position);
+        boolean onItemLongClick(View view, int position);
     }
 
-    public class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-
-        public BaseViewHolder(View view) {
+    static class BaseViewHolder extends RecyclerView.ViewHolder {
+        BaseViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            view.setOnClickListener(this);
-            view.setOnLongClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mClickListener != null) {
-                mClickListener.onItemClick(v, getAdapterPosition());
-            }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            if (mLongClickListener != null) {
-                mLongClickListener.onItemLongClick(v, getAdapterPosition());
-            }
-            return true;
         }
     }
 

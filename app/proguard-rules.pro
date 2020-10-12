@@ -16,79 +16,61 @@
 #   public *;
 #}
 
--optimizationpasses 8
--dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
--dontpreverify
--verbose
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-optimizationpasses 5
 
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgentHelper
--keep public class * extends android.preference.Preference
--keep public class com.android.vending.licensing.ILicensingService
-
--keepattributes *Annotation*
--keepattributes Signature
-
--keepclasseswithmembernames class * {
-    native <methods>;
-}
-
--keepclasseswithmembers class * {
-    public <init>(android.content.Context, android.util.AttributeSet);
-}
-
--keepclasseswithmembers class * {
-    public <init>(android.content.Context, android.util.AttributeSet, int);
-}
-
--keepclassmembers class * extends android.app.Activity {
-    public void *(android.view.View);
-}
-
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
--keep class * implements android.os.Parcelable {
-    public static final android.os.Parcelable$Creator *;
-}
+-keepattributes SourceFile, LineNumberTable
 
 # fresco
--keepclassmembers class * {
-    native <methods>;
-}
+# Keep our interfaces so they can be used by other ProGuard rules.
+# See http://sourceforge.net/p/proguard/bugs/466/
+-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+-keep,allowobfuscation @interface com.facebook.soloader.DoNotOptimize
+
+# Do not strip any method/class that is annotated with @DoNotStrip
 -keep @com.facebook.common.internal.DoNotStrip class *
 -keepclassmembers class * {
     @com.facebook.common.internal.DoNotStrip *;
 }
--dontwarn okio.**
--dontwarn javax.annotation.**
 
-# EventBus
--keepclassmembers class ** {
-    @org.greenrobot.eventbus.Subscribe <methods>;
+# Do not strip any method/class that is annotated with @DoNotOptimize
+-keep @com.facebook.soloader.DoNotOptimize class *
+-keepclassmembers class * {
+    @com.facebook.soloader.DoNotOptimize *;
 }
--keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-    <init>(java.lang.Throwable);
+
+# Keep native methods
+-keepclassmembers class * {
+    native <methods>;
 }
--keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Do not strip SoLoader class and init method
+-keep public class com.facebook.soloader.SoLoader {
+    public static void init(android.content.Context, int);
+}
+
+-dontwarn okio.**
+-dontwarn com.squareup.okhttp.**
+-dontwarn okhttp3.**
+-dontwarn javax.annotation.**
+-dontwarn com.android.volley.toolbox.**
+-dontwarn com.facebook.infer.**
 
 # greenDAO
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-    public static java.lang.String TABLENAME;
+public static java.lang.String TABLENAME;
 }
--keep class **$Properties
+#ref: https://juejin.im/post/5d5fb53b51882554a13f8b6a
+#-keep class **$Properties
+-keep class **$Properties{*;}
 -dontwarn org.greenrobot.greendao.database.**
+-dontwarn org.greenrobot.greendao.rx.**
 
 # ButterKnife
--keep public class * implements butterknife.internal.ViewBinder { public <init>(); }
+# Retain generated class which implement Unbinder.
+-keep public class * implements butterknife.Unbinder { public <init>(**, android.view.View); }
+
+# Prevent obfuscation of types which use ButterKnife annotations since the simple name
+# is used to reflectively look up the generated ViewBinding.
 -keep class butterknife.*
 -keepclasseswithmembernames class * { @butterknife.* <methods>; }
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
@@ -109,3 +91,44 @@
 # andrroid v4 v7
 -dontwarn android.support.v4.**
 -dontwarn android.support.v7.**
+
+# rx
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+#mongodb
+-dontwarn javax.**
+-dontwarn java.lang.management.**
+-dontwarn io.netty.**
+-dontwarn org.ietf.jgss.**
+-dontwarn org.slf4j.**
+-dontwarn org.xerial.snappy.**
+
+-keep class javax.** { *; }
+-keep class java.lang.management.** { *; }
+-keep class io.netty.** { *; }
+-keep class org.ietf.jgss.** { *; }
+-keep class org.slf4j.** { *; }
+-keep class org.xerial.snappy.** { *; }
+
+# guava
+-dontwarn com.google.common.base.**
+-keep class com.google.common.base.** {*;}
+-dontwarn com.google.errorprone.annotations.**
+-keep class com.google.errorprone.annotations.** {*;}
+-dontwarn com.google.j2objc.annotations.**
+-keep class com.google.j2objc.annotations.** { *; }
+-dontwarn java.lang.ClassValue
+-keep class java.lang.ClassValue { *; }
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-keep class org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement { *; }
+

@@ -1,117 +1,78 @@
 package com.hiroshi.cimoc.presenter;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.view.MenuItem;
+import com.hiroshi.cimoc.core.Update;
+import com.hiroshi.cimoc.manager.ComicManager;
+import com.hiroshi.cimoc.model.Comic;
+import com.hiroshi.cimoc.model.MiniComic;
+import com.hiroshi.cimoc.rx.RxEvent;
+import com.hiroshi.cimoc.ui.view.MainView;
 
-import com.hiroshi.cimoc.R;
-import com.hiroshi.cimoc.ui.activity.MainActivity;
-import com.hiroshi.cimoc.ui.fragment.AboutFragment;
-import com.hiroshi.cimoc.ui.fragment.CimocFragment;
-import com.hiroshi.cimoc.ui.fragment.FavoriteFragment;
-import com.hiroshi.cimoc.ui.fragment.HistoryFragment;
-import com.hiroshi.cimoc.model.EventMessage;
-import com.hiroshi.cimoc.ui.fragment.SettingsFragment;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
- * Created by Hiroshi on 2016/7/1.
+ * Created by Hiroshi on 2016/9/21.
  */
-public class MainPresenter extends BasePresenter {
 
-    private MainActivity mMainActivity;
-    private long mExitTime;
+public class MainPresenter extends BasePresenter<MainView> {
 
-    private int mCheckedItem;
-    private FragmentManager mFragmentManager;
-    private CimocFragment mCimocFragment;
-    private FavoriteFragment mFavoriteFragment;
-    private HistoryFragment mHistoryFragment;
-    private SettingsFragment mSettingsFragment;
-    private AboutFragment mAboutFragment;
-    private Fragment mCurrentFragment;
-    
-    public MainPresenter(MainActivity activity) {
-        mMainActivity = activity;
-        mExitTime = 0;
-        initFragment();
+    private ComicManager mComicManager;
+
+    @Override
+    protected void onViewAttach() {
+        mComicManager = ComicManager.getInstance(mBaseView);
     }
 
-    private void initFragment() {
-        mFragmentManager = mMainActivity.getFragmentManager();
-        mCimocFragment = new CimocFragment();
-        mFavoriteFragment = new FavoriteFragment();
-        mHistoryFragment = new HistoryFragment();
-        mSettingsFragment = new SettingsFragment();
-        mAboutFragment = new AboutFragment();
-        mFragmentManager.beginTransaction()
-                .add(R.id.main_fragment_container, mCimocFragment)
-                .add(R.id.main_fragment_container, mFavoriteFragment)
-                .add(R.id.main_fragment_container, mHistoryFragment)
-                .add(R.id.main_fragment_container, mSettingsFragment)
-                .add(R.id.main_fragment_container, mAboutFragment)
-                .hide(mFavoriteFragment)
-                .hide(mHistoryFragment)
-                .hide(mSettingsFragment)
-                .hide(mAboutFragment)
-                .commit();
-        mCurrentFragment = mCimocFragment;
-        mCheckedItem = R.id.drawer_main;
-        mMainActivity.setCheckedItem(mCheckedItem);
+    @Override
+    protected void initSubscription() {
+        addSubscription(RxEvent.EVENT_COMIC_READ, new Action1<RxEvent>() {
+            @Override
+            public void call(RxEvent rxEvent) {
+                MiniComic comic = (MiniComic) rxEvent.getData();
+                mBaseView.onLastChange(comic.getId(), comic.getSource(), comic.getCid(),
+                        comic.getTitle(), comic.getCover());
+            }
+        });
     }
 
-    public void onBackPressed() {
-        if (mMainActivity.isDrawerOpen()) {
-            mMainActivity.closeDrawer();
-        } else if (System.currentTimeMillis() - mExitTime > 2000) {
-            mMainActivity.showSnackbar("再按一次退出程序");
-            mExitTime = System.currentTimeMillis();
-        } else {
-            mMainActivity.finish();
-        }
+    public boolean checkLocal(long id) {
+        Comic comic = mComicManager.load(id);
+        return comic != null && comic.getLocal();
     }
 
-    public void transFragment() {
-        switch (mCheckedItem) {
-            default:
-            case R.id.drawer_main:
-                mCurrentFragment = mCimocFragment;
-                break;
-            case R.id.drawer_comic:
-                mCurrentFragment = mFavoriteFragment;
-                break;
-            case R.id.drawer_history:
-                mCurrentFragment = mHistoryFragment;
-                break;
-            case R.id.drawer_settings:
-                mCurrentFragment = mSettingsFragment;
-                break;
-            case R.id.drawer_about:
-                mCurrentFragment = mAboutFragment;
-                break;
-        }
-        mFragmentManager.beginTransaction().show(mCurrentFragment).commit();
-        mMainActivity.hideProgressBar();
+    public void loadLast() {
+        mCompositeSubscription.add(mComicManager.loadLast()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Comic>() {
+                    @Override
+                    public void call(Comic comic) {
+                        if (comic != null) {
+                            mBaseView.onLastLoadSuccess(comic.getId(), comic.getSource(), comic.getCid(), comic.getTitle(), comic.getCover());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mBaseView.onLastLoadFail();
+                    }
+                }));
     }
 
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == mCheckedItem) {
-            return false;
-        }
-        mCheckedItem = menuItem.getItemId();
-        mMainActivity.showProgressBar();
-        mFragmentManager.beginTransaction().hide(mCurrentFragment).commit();
-        mMainActivity.setToolbarTitle(menuItem.getTitle().toString());
-        mMainActivity.setCheckedItem(mCheckedItem);
-        mMainActivity.closeDrawer();
-        return true;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(EventMessage msg) {
-
+    public void checkUpdate(final String version) {
+        mCompositeSubscription.add(Update.check()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        if (-1 == version.indexOf(s) && -1 == version.indexOf("t")) {
+                            mBaseView.onUpdateReady();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                    }
+                }));
     }
 
 }

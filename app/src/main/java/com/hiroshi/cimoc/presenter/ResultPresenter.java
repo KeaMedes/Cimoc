@@ -1,88 +1,153 @@
 package com.hiroshi.cimoc.presenter;
 
-import android.content.Intent;
-
-import com.hiroshi.cimoc.core.Kami;
-import com.hiroshi.cimoc.core.base.Manga;
+import com.hiroshi.cimoc.core.Manga;
+import com.hiroshi.cimoc.manager.SourceManager;
 import com.hiroshi.cimoc.model.Comic;
-import com.hiroshi.cimoc.ui.activity.DetailActivity;
-import com.hiroshi.cimoc.ui.activity.ResultActivity;
-import com.hiroshi.cimoc.model.EventMessage;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.hiroshi.cimoc.model.Source;
+import com.hiroshi.cimoc.parser.Parser;
+import com.hiroshi.cimoc.ui.view.ResultView;
 
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 
 /**
  * Created by Hiroshi on 2016/7/4.
  */
-public class ResultPresenter extends BasePresenter {
+public class ResultPresenter extends BasePresenter<ResultView> {
 
-    private ResultActivity mResultActivity;
-
-    private Manga mManga;
+    private static final int STATE_NULL = 0;
+    private static final int STATE_DOING = 1;
+    private static final int STATE_DONE = 3;
+    private SourceManager mSourceManager;
+    private State[] mStateArray;
     private String keyword;
-    private int page;
-    private boolean isLoading;
+    private boolean strictSearch;
+    private int error = 0;
+    private String keywordTemp;
+    private String comicTitleTemp = "";
 
-    public ResultPresenter(ResultActivity activity, int source, String keyword) {
-        this.mResultActivity = activity;
-        this.mManga = Kami.getMangaById(source);
+    public ResultPresenter(int[] source, String keyword, boolean strictSearch) {
         this.keyword = keyword;
-        this.page = 0;
-        this.isLoading = false;
+        this.strictSearch = strictSearch;
+        if (source != null) {
+            initStateArray(source);
+        }
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        mManga.search(keyword, ++page);
+    protected void onViewAttach() {
+        mSourceManager = SourceManager.getInstance(mBaseView);
+        if (mStateArray == null) {
+            initStateArray(loadSource());
+        }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mManga.cancel();
+    private void initStateArray(int[] source) {
+        mStateArray = new State[source.length];
+        for (int i = 0; i != mStateArray.length; ++i) {
+            mStateArray[i] = new State();
+            mStateArray[i].source = source[i];
+            mStateArray[i].page = 0;
+            mStateArray[i].state = STATE_NULL;
+        }
     }
 
-    public void onScrolled(int dy) {
-        int lastItem = mResultActivity.findLastItemPosition();
-        int itemCount = mResultActivity.getItemCount();
-        if (lastItem >= itemCount - 4 && dy > 0) {
-            if (!isLoading) {
-                isLoading = true;
-                mManga.search(keyword, ++page);
+    private int[] loadSource() {
+        List<Source> list = mSourceManager.listEnable();
+        int[] source = new int[list.size()];
+        for (int i = 0; i != source.length; ++i) {
+            source[i] = list.get(i).getType();
+        }
+        return source;
+    }
+
+    public void loadCategory() {
+        if (mStateArray[0].state == STATE_NULL) {
+            Parser parser = mSourceManager.getParser(mStateArray[0].source);
+            mStateArray[0].state = STATE_DOING;
+
+            //修复扑飞漫画分类查看
+            if (mStateArray[0].page == 0) {
+                if (parser.getTitle().equals("扑飞漫画")) {
+                    keywordTemp = keyword;
+                    keyword = keyword.replace("_%d", "");
+                }
+            } else {
+                if (parser.getTitle().equals("扑飞漫画")) {
+                    keyword = keywordTemp;
+                }
+            }
+            mCompositeSubscription.add(Manga.getCategoryComic(parser, keyword, ++mStateArray[0].page)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<Comic>>() {
+                        @Override
+                        public void call(List<Comic> list) {
+
+                            //修复扑飞漫画分类查看时的重复加载列表问题
+                            if (!comicTitleTemp.equals("") && comicTitleTemp.equals(list.get(0).getTitle())) {
+                                list.clear();
+                            }
+                            comicTitleTemp = list.get(0).getTitle();
+
+                            mBaseView.onLoadSuccess(list);
+                            mStateArray[0].state = STATE_NULL;
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            if (mStateArray[0].page == 1) {
+                                mBaseView.onLoadFail();
+                            }
+                        }
+                    }));
+        }
+    }
+
+    public void loadSearch() {
+        if (mStateArray.length == 0) {
+            mBaseView.onSearchError();
+            return;
+        }
+        for (final State obj : mStateArray) {
+            if (obj.state == STATE_NULL) {
+                Parser parser = mSourceManager.getParser(obj.source);
+                obj.state = STATE_DOING;
+                mCompositeSubscription.add(Manga.getSearchResult(parser, keyword, ++obj.page, strictSearch)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Comic>() {
+                            @Override
+                            public void call(Comic comic) {
+                                mBaseView.onSearchSuccess(comic);
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                                if (obj.page == 1) {
+                                    obj.state = STATE_DONE;
+                                    if (++error == mStateArray.length) {
+                                        mBaseView.onSearchError();
+                                    }
+                                }
+                            }
+                        }, new Action0() {
+                            @Override
+                            public void call() {
+                                obj.state = STATE_NULL;
+                            }
+                        }));
             }
         }
     }
 
-    public void onItemClick(int position) {
-        Comic comic = mResultActivity.getItem(position);
-        Intent intent = DetailActivity.createIntent(mResultActivity, comic.getId(), comic.getSource(), comic.getCid());
-        mResultActivity.startActivity(intent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(EventMessage msg) {
-        switch (msg.getType()) {
-            case EventMessage.SEARCH_SUCCESS:
-                mResultActivity.hideProgressBar();
-                mResultActivity.addAll((List<Comic>) msg.getData());
-                isLoading = false;
-                break;
-            case EventMessage.SEARCH_FAIL:
-                if (page == 1) {
-                    mResultActivity.hideProgressBar();
-                    mResultActivity.showSnackbar("搜索结果为空");
-                }
-                break;
-            case EventMessage.NETWORK_ERROR:
-                mResultActivity.hideProgressBar();
-                mResultActivity.showSnackbar("网络错误");
-                isLoading = false;
-                break;
-        }
+    private static class State {
+        int source;
+        int page;
+        int state;
     }
 
 }

@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="source_items">
-        <item>看漫画 - IKanman</item>
-        <item>动漫之家 - Dmzj</item>
-        <item>汗汗漫画 - HHAAZZ</item>
-        <item>CC图库 - CCTuku</item>
+    <string-array name="launch_items">
+        <item>收藏</item>
+        <item>图源</item>
+        <item>标签</item>
+        <item>历史</item>
+        <item>下载</item>
+        <item>本地</item>
     </string-array>
-    <string-array name="ex_source_items">
-        <item>看漫画 - IKanman</item>
-        <item>动漫之家 - Dmzj</item>
-        <item>汗汗漫画 - HHAAZZ</item>
-        <item>CC图库 - CCTuku</item>
-        <item>E站 - EHentai</item>
+    <string-array name="reader_mode_items">
+        <item>翻页模式</item>
+        <item>卷纸模式</item>
+    </string-array>
+    <string-array name="reader_turn_items">
+        <item>从左到右</item>
+        <item>从右到左</item>
+        <item>从上到下</item>
+    </string-array>
+    <string-array name="reader_orientation_items">
+        <item>竖屏</item>
+        <item>横屏</item>
+        <item>跟随系统</item>
+    </string-array>
+    <string-array name="theme_items">
+        <item>天蓝</item>
+        <item>蓝灰</item>
+        <item>青绿</item>
+        <item>紫色</item>
+        <item>粉色</item>
+        <item>棕色</item>
+    </string-array>
+    <string-array name="event_items">
+        <item>无</item>
+        <item>上一页</item>
+        <item>下一页</item>
+        <item>保存图片</item>
+        <item>加载上一章</item>
+        <item>加载下一章</item>
+        <item>退出阅读器</item>
+        <item>跳到第一页</item>
+        <item>跳到最后一页</item>
+        <item>切换屏幕方向</item>
+        <item>切换阅读模式</item>
+        <item>显示/隐藏进度条</item>
+        <item>重新加载图片</item>
+        <item>切换夜间模式</item>
     </string-array>
 </resources>

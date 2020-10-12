@@ -2,63 +2,75 @@ package com.hiroshi.cimoc.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.hiroshi.cimoc.R;
+import com.hiroshi.cimoc.misc.Switcher;
 import com.hiroshi.cimoc.model.Chapter;
+import com.hiroshi.cimoc.ui.widget.ChapterButton;
 
 import java.util.List;
 
 import butterknife.BindView;
 
 /**
- * Created by Hiroshi on 2016/7/2.
+ * Created by Hiroshi on 2016/11/15.
  */
-public class ChapterAdapter extends BaseAdapter<Chapter> {
 
-    private String title;
-    private String image;
-    private String update;
-    private String author;
-    private String intro;
-    private boolean status;
+public class ChapterAdapter extends BaseAdapter<Switcher<Chapter>> {
 
-    private String last;
+    private static final int TYPE_ITEM = 2017030222;
+    private static final int TYPE_BUTTON = 2017030223;
 
-    public class ViewHolder extends BaseViewHolder {
-        @BindView(R.id.item_chapter_button) TextView chapterButton;
+    private boolean isButtonMode = false;
 
-        public ViewHolder(View view) {
-            super(view);
-        }
-    }
-
-    public class HeaderHolder extends BaseViewHolder {
-        @BindView(R.id.item_header_comic_image) SimpleDraweeView mComicImage;
-        @BindView(R.id.item_header_comic_title) TextView mComicTitle;
-        @BindView(R.id.item_header_comic_intro) TextView mComicIntro;
-        @BindView(R.id.item_header_comic_status) TextView mComicStatus;
-        @BindView(R.id.item_header_comic_update) TextView mComicUpdate;
-        @BindView(R.id.item_header_comic_author) TextView mComicAuthor;
-
-        public HeaderHolder(View view) {
-            super(view);
-        }
-    }
-
-    public ChapterAdapter(Context context, List<Chapter> list, String image, String title, String author, String intro, boolean status, String update) {
+    public ChapterAdapter(Context context, List<Switcher<Chapter>> list) {
         super(context, list);
-        this.image = image;
-        this.title = title;
-        this.intro = intro;
-        this.status = status;
-        this.update = update;
-        this.author = author;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return isButtonMode ? TYPE_BUTTON : TYPE_ITEM;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View view = mInflater.inflate(R.layout.item_select, parent, false);
+            return new ItemHolder(view);
+        }
+        View view = mInflater.inflate(R.layout.item_chapter, parent, false);
+        return new ButtonHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
+        Switcher<Chapter> switcher = mDataSet.get(position);
+        if (isButtonMode) {
+            final ButtonHolder viewHolder = (ButtonHolder) holder;
+            viewHolder.chapterButton.setText(switcher.getElement().getTitle());
+            if (switcher.getElement().isDownload()) {
+                viewHolder.chapterButton.setDownload(true);
+                viewHolder.chapterButton.setSelected(false);
+            } else {
+                viewHolder.chapterButton.setDownload(false);
+                viewHolder.chapterButton.setSelected(switcher.isEnable());
+            }
+        } else {
+            ItemHolder viewHolder = (ItemHolder) holder;
+            viewHolder.chapterTitle.setText(switcher.getElement().getTitle());
+            viewHolder.chapterChoice.setEnabled(!switcher.getElement().isDownload());
+            viewHolder.chapterChoice.setChecked(switcher.isEnable());
+        }
+    }
+
+    public void setButtonMode(boolean enable) {
+        isButtonMode = enable;
     }
 
     @Override
@@ -66,78 +78,35 @@ public class ChapterAdapter extends BaseAdapter<Chapter> {
         return new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int position = parent.getChildLayoutPosition(view);
-                if (position == 0) {
-                    outRect.set(0, 0, 0, 10);
-                } else {
-                    outRect.set(30, 0, 30, 40);
-                }
+                int offset = parent.getWidth() / 40;
+                outRect.set(offset, 0, offset, (int) (offset * 1.5));
             }
         };
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return position == 0 ? 0 : 1;
+    protected boolean isClickValid() {
+        return true;
     }
 
-    @Override
-    public int getItemCount() {
-        return mDataSet.size() + 1;
-    }
+    static class ItemHolder extends BaseAdapter.BaseViewHolder {
+        @BindView(R.id.item_select_title)
+        TextView chapterTitle;
+        @BindView(R.id.item_select_checkbox)
+        CheckBox chapterChoice;
 
-    @Override
-    public Chapter getItem(int position) {
-        return super.getItem(position - 1);
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 0) {
-            View view = mInflater.inflate(R.layout.item_chapter_header, parent, false);
-            return new HeaderHolder(view);
-        }
-        View view = mInflater.inflate(R.layout.item_chapter, parent, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (position == 0) {
-            HeaderHolder headerHolder = (HeaderHolder) holder;
-            headerHolder.mComicImage.setImageURI(image);
-            headerHolder.mComicTitle.setText(title);
-            headerHolder.mComicIntro.setText(intro);
-            headerHolder.mComicStatus.setText(status ? "完结" : "连载中");
-            headerHolder.mComicUpdate.setText(update);
-            headerHolder.mComicAuthor.setText(author);
-        } else {
-            Chapter chapter = mDataSet.get(position - 1);
-            ViewHolder viewHolder = (ViewHolder) holder;
-            viewHolder.chapterButton.setText(chapter.getTitle());
-            if (chapter.getPath().equals(last)) {
-                viewHolder.chapterButton.setSelected(true);
-            } else if (viewHolder.chapterButton.isSelected()) {
-                viewHolder.chapterButton.setSelected(false);
-            }
+        ItemHolder(View view) {
+            super(view);
         }
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        final GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return position == 0 ? manager.getSpanCount() : 1;
-            }
-        });
-    }
+    static class ButtonHolder extends BaseAdapter.BaseViewHolder {
+        @BindView(R.id.item_chapter_button)
+        ChapterButton chapterButton;
 
-    public void setLast(String last) {
-        this.last = last;
-        notifyDataSetChanged();
+        ButtonHolder(View view) {
+            super(view);
+        }
     }
 
 }

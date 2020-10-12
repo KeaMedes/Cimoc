@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hiroshi.cimoc.ui.custom.zoomable.ZoomableDraweeView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hiroshi.cimoc.ui.widget.PhotoDraweeView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/picture_image_view"
+    android:id="@+id/reader_image_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    fresco:actualImageScaleType="fitCenter"
-    fresco:progressBarImage="@drawable/progress_trans"
+    fresco:failureImage="@drawable/ic_clear_white_24dp"
+    fresco:failureImageScaleType="center"
+    fresco:progressBarImage="@drawable/reader_progress"
     fresco:progressBarImageScaleType="center"
     fresco:retryImage="@drawable/ic_replay_white_24dp"
-    fresco:retryImageScaleType="center"
-    fresco:failureImage="@drawable/ic_clear_white_24dp"
-    fresco:failureImageScaleType="center"/>
+    fresco:fadeDuration="0"
+    fresco:retryImageScaleType="center" />

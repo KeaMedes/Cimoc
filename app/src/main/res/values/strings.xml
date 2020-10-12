@@ -1,36 +1,318 @@
 <resources>
-
     <string name="app_name">Cimoc</string>
 
-    <string name="drawer_main">Cimoc</string>
-    <string name="drawer_comic">我的漫画</string>
-    <string name="drawer_history">历史浏览</string>
-    <string name="drawer_system">系统选项</string>
+    <string name="drawer_comic">漫画</string>
+    <string name="drawer_source">图源</string>
+    <string name="drawer_list">列表</string>
+    <string name="drawer_tag">标签</string>
+    <string name="drawer_picture">截图</string>
     <string name="drawer_settings">设置</string>
     <string name="drawer_about">关于</string>
+    <string name="drawer_light">日间模式</string>
+    <string name="drawer_night">夜间模式</string>
+    <string name="drawer_backup">备份</string>
 
-    <string name="hint_for_search">请输入漫画名</string>
-    <string name="empty_for_search">关键字不能为空</string>
+    <string name="main_double_click">再按一次退出</string>
+    <string name="main_last_read_fail">读取最后阅读失败</string>
+    <string name="main_notice">欢迎使用</string>
+    <string name="main_notice_content">我正在向tachiyomi转移中。</string>
+    <string name="main_permission">权限请求</string>
+    <string name="main_permission_content">下载、备份还原与保存图片功能需要访问SD卡的权限！\n如果没有存储权限，将会出现设置功能将闪退，备份功能无法使用等问题。请在之后的弹出框中确定授予权限！</string>
+    <string name="main_permission_success">授权成功</string>
+    <string name="main_permission_fail">授权失败</string>
+    <string name="main_ready_update">检测到新版本</string>
 
-    <string name="result_update">最后更新：</string>
-    <string name="result_source">来源：</string>
+    <string name="search_menu_source">图源</string>
+    <string name="search_keyword_empty">关键字为空</string>
+    <string name="search_keyword_input">请输入关键字</string>
+    <string name="search_strict">严格搜索</string>
+    <string name="search_source_select">图源选择</string>
+    <string name="search_source_none">未选择图源</string>
+    <string name="search_source_load_fail">读取图源失败</string>
 
-    <string name="detail_header_update">最后更新：</string>
-    <string name="detail_failure">获取详情失败 :(</string>
+    <string name="result">搜索结果</string>
+    <string name="result_empty">搜索结果为空</string>
 
-    <string name="reader_absence">前面没有了 :(</string>
+    <string name="detail"></string>
+    <string name="detail_favorite">收藏成功</string>
+    <string name="detail_unfavorite">取消收藏成功</string>
+    <string name="detail_tag_favorite">请先收藏漫画</string>
+    <string name="detail_history">继续阅读</string>
+    <string name="detail_download">下载</string>
+    <string name="detail_download_queue_success">已加入下载队列</string>
+    <string name="detail_download_queue_fail">加入下载队列失败</string>
+    <string name="detail_tag">编辑标签</string>
+    <string name="detail_search_title">搜索标题</string>
+    <string name="detail_search_author">搜索作者</string>
+    <string name="detail_share_url">分享漫画</string>
+    <string name="detail_reverse_list">反转列表</string>
 
-    <string name="about_version">version: 1.0.0</string>
+    <string name="tag_editor">标签编辑</string>
 
-    <string name="settings_backup">备份设置</string>
-    <string name="settings_backup_save">备份</string>
-    <string name="settings_backup_save_summary">备份到本地文件</string>
-    <string name="settings_backup_restore">恢复</string>
-    <string name="settings_backup_restore_summary">从本地文件中恢复</string>
-    <string name="settings_other">其他设置</string>
-    <string name="settings_other_history">清除历史纪录</string>
-    <string name="settings_other_cache">清除缓存</string>
+    <string name="chapter">章节列表</string>
+    <string name="chapter_all">全选</string>
+    <string name="chapter_sort">排序</string>
+    <string name="chapter_switch_view">切换视图</string>
+    <string name="chapter_download_perm_fail">获取权限失败</string>
+    <string name="chapter_download_empty">未选择章节</string>
 
+    <string name="category">分类</string>
+
+    <string name="comic_tab_favorite">收藏</string>
+    <string name="comic_tab_history">历史</string>
+    <string name="comic_tab_download">下载</string>
+    <string name="comic_tab_local">本地</string>
+    <string name="comic_filter">过滤</string>
+    <string name="comic_bbs">讨论圈</string>
+    <string name="comic_search">搜索</string>
+    <string name="comic_cancel_highlight">全部标记已读</string>
+    <string name="comic_load_tag_fail">读取标签失败</string>
+    <string name="comic_status_continue">连载</string>
+    <string name="comic_status_finish">完结</string>
+    <string name="comic_tag_select">标签选择</string>
+    <string name="comic_info">漫画信息</string>
+    <string name="comic_info_not_found">找不到漫画信息</string>
+    <string name="comic_info_title">漫画名称</string>
+    <string name="comic_info_source">图源名称</string>
+    <string name="comic_info_status">漫画状态</string>
+    <string name="comic_info_chapter">最后阅读</string>
+    <string name="comic_info_time">阅读时间</string>
+
+    <string name="favorite_check_update_fail">检查更新失败</string>
+    <string name="favorite_check_update_confirm">是否检查更新</string>
+    <string name="favorite_check_update_doing">正在检查更新</string>
+    <string name="favorite_check_update_done">检查更新完成</string>
+    <string name="favorite_delete">取消收藏</string>
+    <string name="favorite_delete_confirm">是否取消收藏</string>
+
+    <string name="history_delete">删除历史</string>
+    <string name="history_delete_confirm">是否删除历史</string>
+    <string name="history_clear_confirm">是否清除所有历史纪录</string>
+
+    <string name="reader_prev_none">前面没有了</string>
+    <string name="reader_next_none">后面没有了</string>
+    <string name="reader_load_prev">正在加载上一话</string>
+    <string name="reader_load_next">正在加载下一话</string>
+    <string name="reader_load_error">加载错误</string>
+    <string name="reader_load_success">加载成功</string>
+    <string name="reader_picture_loading">正在加载中..</string>
+    <string name="reader_picture_save_success">保存成功</string>
+    <string name="reader_picture_save_fail">保存失败</string>
+
+    <string name="reader_config_title">阅读配置</string>
+    <string name="reader_config_page">翻页模式</string>
+    <string name="reader_config_stream">卷纸模式</string>
+
+    <string name="source_detail">图源详情</string>
+    <string name="source_detail_type">图源 ID</string>
+    <string name="source_detail_title">图源名称</string>
+    <string name="source_detail_favorite">收藏统计</string>
+
+    <string name="category_subject">主题</string>
+    <string name="category_area">地区</string>
+    <string name="category_reader">读者</string>
+    <string name="category_year">年份</string>
+    <string name="category_progress">进度</string>
+    <string name="category_order">排序</string>
+
+    <string name="settings_reader">阅读设置</string>
+    <string name="settings_reader_mode">默认阅读模式</string>
+    <string name="settings_reader_config">阅读配置</string>
+    <string name="settings_reader_config_summary">自定义阅读模式下各项功能</string>
+    <string name="settings_reader_controller_trig_threshold">控制器触发阈值</string>
+    <string name="settings_reader_controller_trig_threshold_summary">设置摇杆及扳机键触发阈值</string>
+    <string name="settings_reader_white_background">使用白色背景</string>
+    <string name="settings_reader_white_background_summary">推荐E-ink设备使用，OLED设备不推荐。</string>
+    <string name="settings_reader_turn">阅读方向</string>
+    <string name="settings_reader_orientation">屏幕方向</string>
+    <string name="settings_reader_click_event">自定义点击事件</string>
+    <string name="settings_reader_click_event_summary">阅读状态屏幕及按键点击事件</string>
+    <string name="settings_reader_long_click_event">自定义长按事件</string>
+    <string name="settings_reader_long_click_event_summary">阅读状态屏幕长按事件</string>
+    <!--<string name="settings_reader_volume_click_event">自定义音量键点击事件</string>-->
+    <!--<string name="settings_reader_volume_click_event_summary">音量键点击事件</string>-->
+    <string name="settings_reader_load_prev">自动加载上一章</string>
+    <string name="settings_reader_load_prev_summary">位于第一页自动加载上一章</string>
+    <string name="settings_reader_load_next">自动加载下一章</string>
+    <string name="settings_reader_load_next_summary">位于最后一页自动加载下一章</string>
+    <string name="settings_reader_white_edge">自动裁剪白边</string>
+    <string name="settings_reader_white_edge_summary">阅读状态自动裁剪白边</string>
+    <string name="settings_reader_ban_double_click">禁止双击放大</string>
+    <string name="settings_reader_ban_double_click_summary">阅读状态禁止双击放大</string>
+    <string name="settings_reader_keep_bright">保持屏幕常亮</string>
+    <string name="settings_reader_keep_bright_summary">阅读状态保持屏幕常亮</string>
+    <string name="settings_reader_hide_info">隐藏阅读信息</string>
+    <string name="settings_reader_hide_info_summary">阅读状态隐藏右上角的信息</string>
+    <string name="settings_reader_trigger">翻页触发位移</string>
+    <string name="settings_reader_quick_turn">快速翻页</string>
+    <string name="settings_reader_quick_turn_summary">不显示翻页平移效果</string>
+    <string name="settings_reader_ban_turn">放大禁止翻页</string>
+    <string name="settings_reader_ban_turn_summary">放大状态禁止翻页</string>
+    <string name="settings_reader_interval">显示图片间隔</string>
+    <string name="settings_reader_interval_summary">阅读状态显示图片间隔</string>
+    <string name="settings_reader_hide_nav">隐藏导航栏</string>
+    <string name="settings_reader_hide_nav_summary">阅读状态底部隐藏导航栏</string>
+    <string name="settings_reader_paging">自动切割大图</string>
+    <string name="settings_reader_paging_reverse">反向切割大图</string>
+    <string name="settings_reader_paging_summary">阅读状态自动切割大图</string>
+    <string name="settings_reader_paging_reverse_summary">交换大图切割后位置</string>
+    <string name="settings_reader_scale_factor">双击放大百分比</string>
+    <string name="settings_download">下载设置</string>
+    <string name="settings_download_thread">多任务下载数量</string>
+    <string name="settings_download_scan">扫描已下载漫画</string>
+    <string name="settings_download_scan_summary">扫描并恢复已下载漫画</string>
+    <string name="settings_download_scan_confirm">需要将从本软件下载的漫画放在软件存储目录的 download 目录下！重点是，不一定可以成功！</string>
+    <string name="settings_search">搜索设置</string>
+    <string name="settings_search_auto_complete">开启搜索提示</string>
+    <string name="settings_search_auto_complete_summary">根据输入的关键字弹出提示</string>
+    <string name="settings_other">应用设置</string>
+    <string name="settings_reader_show_topbar">显示通知栏</string>
+    <string name="settings_reader_show_topbar_summary">阅读界面显示通知栏</string>
+    <string name="settings_other_connect_only_wifi">仅WiFi联网</string>
+    <string name="settings_other_connect_only_wifi_summary">非 WIFI 环境下禁止联网</string>
+    <string name="settings_other_loadcover_only_wifi">禁止流量加载封面</string>
+    <string name="settings_other_loadcover_only_wifi_summary">非 WIFI 环境下使用缓存加载封面</string>
+    <string name="settings_other_check_update">自动检查漫画更新</string>
+    <string name="settings_other_check_update_summary">WIFI 环境下自动检查漫画更新</string>
+    <string name="settings_other_launch">默认启动页</string>
+    <string name="settings_other_theme">主题颜色</string>
+    <string name="settings_other_night_alpha">夜间模式亮度</string>
+    <string name="settings_other_storage">存储路径</string>
+    <string name="settings_other_storage_summary">自定义存储路径</string>
+    <string name="settings_other_storage_not_found">打开 DocumentUI 失败</string>
+    <string name="settings_other_storage_edit_neutral">选择路径</string>
+    <string name="settings_other_clear_cache">清理缓存</string>
+    <string name="settings_other_clear_cache_summary">清理在线漫画的缓存数据</string>
+    <string name="settings_other_firebase_event">Firebase数据收集</string>
+    <string name="settings_other_firebase_event_summary">允许程序通过Firebase收集您的使用情况，以便于分析程序和漫画源的工作状态。</string>
+
+    <string name="backup_save">备份</string>
+    <string name="backup_save_comic_auto">自动备份</string>
+    <string name="backup_save_comic_auto_summary">自动备份收藏和历史漫画</string>
+    <string name="backup_save_comic">备份漫画</string>
+    <string name="backup_save_comic_summary">备份收藏和历史漫画</string>
+    <string name="backup_save_tag">备份标签</string>
+    <string name="backup_save_tag_summary">备份标签及相应漫画</string>
+    <string name="backup_save_settings">备份设置</string>
+    <string name="backup_save_settings_summary">备份所有个人配置</string>
+    <string name="backup_save_success">备份成功 共 %d 条记录</string>
+    <string name="backup_restore">恢复</string>
+    <string name="backup_restore_not_found">没有找到备份文件</string>
+    <string name="backup_restore_comic">恢复漫画</string>
+    <string name="backup_restore_comic_summary">恢复收藏和历史漫画</string>
+    <string name="backup_restore_tag">恢复标签</string>
+    <string name="backup_restore_tag_summary">恢复标签及相应漫画</string>
+    <string name="backup_cloud">云端</string>
+    <string name="backup_cloud_restore_tag">从云端恢复</string>
+    <string name="backup_cloud_restore_tag_summary">从云端恢复收藏的漫画</string>
+    <string name="backup_cloud_clear_tag">清除云端数据</string>
+    <string name="backup_cloud_clear_tag_summary">清除云端同步的漫画数据</string>
+    <string name="backup_cloud_backup_tag">备份到云端</string>
+    <string name="backup_cloud_backup_tag_summary">备份收藏漫画到云端</string>
+    <string name="backup_cloud_sync_tag">自动同步</string>
+    <string name="backup_cloud_sync_tag_summary">自动同步收藏到云</string>
+    <string name="backup_restore_settings">恢复设置</string>
+    <string name="backup_restore_settings_summary">恢复所有个人配置</string>
+
+    <string name="home_page">主页</string>
+    <string name="home_page_url">https://github.com/feilongfl/Cimoc</string>
+    <string name="home_page_cimqus">Cimqus</string>
+    <string name="home_page_cimqus_url">https://cimqus.now.sh</string>
+    <string name="home_page_gitter">Gitter</string>
+    <string name="home_page_gitter_url">https://gitter.im/flcimoc/Lobby</string>
+    <string name="home_page_comiclist">Comiclist</string>
+    <string name="home_page_comiclist_url">https://cimoc.netlify.com/</string>
     <string name="about_resource">源代码</string>
-    <string name="about_resource_url">https://github.com/Arachnid-27/Cimoc</string>
+    <string name="about_resource_url">https://github.com/feilongfl/Cimoc</string>
+    <string name="about_resource_ori">原作仓库</string>
+    <string name="about_resource_ori_url">https://github.com/Arachnid-27/Cimoc</string>
+    <string name="about_support">意见反馈</string>
+    <string name="about_support_url">https://github.com/feilongfl/Cimoc/issues</string>
+    <string name="about_update">检查更新</string>
+    <string name="about_update_url">https://github.com/feilongfl/Cimoc/releases</string>
+    <string name="about_update_summary">点击访问Github Releases页面</string>
+    <string name="about_update_app_auto">自动检查更新APP</string>
+    <string name="about_update_latest">当前已经是最新版本</string>
+    <string name="about_update_download">点击下载最新版本</string>
+    <string name="about_update_doing">正在检查更新</string>
+    <string name="about_update_fail">检查更新失败</string>
+    <string name="about_resource_fail">打开网页失败</string>
+
+    <string name="dialog_choice">单项选择</string>
+    <string name="dialog_confirm">操作确认</string>
+    <string name="dialog_positive">确定</string>
+    <string name="dialog_negative">取消</string>
+    <string name="dialog_close">关闭</string>
+    <string name="dialog_doing">正在执行中</string>
+
+    <string name="local_delete">删除漫画</string>
+    <string name="local_delete_confirm">是否删除漫画（不会删除文件）</string>
+
+    <string name="tag_add">添加标签</string>
+    <string name="tag_delete_confirm">是否删除标签</string>
+
+    <string name="part_favorite_select">选择漫画</string>
+    <string name="part_favorite_delete_confirm">是否删除漫画</string>
+
+    <string name="part_favorite_add">添加漫画</string>
+
+    <string name="download_service_doing">正在下载漫画</string>
+    <string name="download_service_done">所有任务已完成</string>
+    <string name="download_start_success">已开始全部下载任务</string>
+    <string name="download_stop_success">已暂停全部下载任务</string>
+    <string name="download_task_empty">下载任务为空</string>
+    <string name="download_ask_stop">请先暂停下载任务</string>
+    <string name="download_action_confirm">是否开始或暂停下载</string>
+    <string name="download_delete">删除漫画</string>
+    <string name="download_delete_confirm">是否删除下载</string>
+
+    <string name="task_parse">正在解析</string>
+    <string name="task_pause">暂停下载</string>
+    <string name="task_wait">等待下载</string>
+    <string name="task_doing">正在下载</string>
+    <string name="task_finish">下载完成</string>
+    <string name="task_error">下载错误</string>
+    <string name="task_list">任务列表</string>
+    <string name="task_history">继续阅读</string>
+    <string name="task_load_task_fail">读取任务失败</string>
+    <string name="task_delete">删除任务</string>
+    <string name="task_read">阅读漫画</string>
+    <string name="task_sort">排序</string>
+    <string name="task_empty">未选择任务</string>
+
+    <string name="dir_picker">目录选择</string>
+    <string name="dir_picker_parent">&lt; 返回上层目录 &gt;</string>
+
+    <string name="event_select">事件选择</string>
+
+    <string name="common_data_load_fail">读取数据失败</string>
+    <string name="common_keyword_empty">关键字为空</string>
+    <string name="common_parse_error">解析错误</string>
+    <string name="common_execute_success">操作成功</string>
+    <string name="common_execute_fail">操作失败</string>
+    <string name="common_operation_select">操作选择</string>
+    <string name="common_null">null</string>
+    <string name="about_version">飞龙</string>
+    <string name="detail_disqus">评论</string>
+
+    <!--登陆相关-->
+    <string name="com_auth0_client_id">NulJt1aXcyBVmuzf3KctjdURchpHhKqW</string>
+    <string name="com_auth0_domain">cimoc.auth0.com</string>
+    <string name="title_activity_login">Users</string>
+    <string name="user_login_tips">请登录</string>
+    <string name="user_login_item">登录</string>
+    <string name="user_login_failed">登陆失败</string>
+    <string name="user_login_sucess">登陆成功</string>
+    <string name="user_login_logout_sucess">注销成功</string>
+    <string name="user_login_logout_tips">您确定要注销么？</string>
+    <string name="user_login_logout">注销</string>
+
+    <!--祝愿不被乱改，请大家手下留情，可以随意下载，不要乱加东西-->
+    <string name="mongo_str">mongodb://comic:ba93Z5qUerhSJE3q@ds014118.mlab.com:14118</string>
+    <string name="mongo_database_name">comic</string>
+    <string name="mongo_comic_base">comic-base</string>
+    <string name="mongo_comic_chapter">comic-chapter</string>
+
+    <string name="developing">此功能正在开发中</string>
+
 </resources>

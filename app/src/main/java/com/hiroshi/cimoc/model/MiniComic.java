@@ -10,16 +10,9 @@ public class MiniComic {
     private String cid;
     private String title;
     private String cover;
-    private String update;
-
-    public MiniComic(Long id, int source, String cid, String title, String cover, String update) {
-        this.id = id;
-        this.source = source;
-        this.cid = cid;
-        this.title = title;
-        this.cover = cover;
-        this.update = update;
-    }
+    private Boolean finish;
+    private boolean highlight;
+    private boolean local;
 
     public MiniComic(Comic comic) {
         this.id = comic.getId();
@@ -27,7 +20,9 @@ public class MiniComic {
         this.cid = comic.getCid();
         this.title = comic.getTitle();
         this.cover = comic.getCover();
-        this.update = comic.getUpdate();
+        this.finish = comic.getFinish();
+        this.highlight = comic.getHighlight();
+        this.local = comic.getLocal();
     }
 
     @Override
@@ -35,16 +30,33 @@ public class MiniComic {
         return o instanceof MiniComic && ((MiniComic) o).id.equals(id);
     }
 
-    public String getUpdate() {
-        return this.update;
+    @Override
+    public int hashCode() {
+        return id == null ? super.hashCode() : id.hashCode();
     }
 
-    public void setUpdate(String update) {
-        this.update = update;
+    public Boolean isFinish() {
+        return finish;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public boolean isHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
+    }
+
+    public boolean isLocal() {
+        return local;
     }
 
     public String getCover() {
-        return this.cover;
+        return cover;
     }
 
     public void setCover(String cover) {
@@ -52,7 +64,7 @@ public class MiniComic {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {
@@ -60,7 +72,7 @@ public class MiniComic {
     }
 
     public String getCid() {
-        return this.cid;
+        return cid;
     }
 
     public void setCid(String cid) {
@@ -68,7 +80,7 @@ public class MiniComic {
     }
 
     public int getSource() {
-        return this.source;
+        return source;
     }
 
     public void setSource(int source) {
@@ -76,7 +88,7 @@ public class MiniComic {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
